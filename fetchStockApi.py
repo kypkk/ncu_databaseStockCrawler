@@ -2,7 +2,11 @@ import requests
 import json
 import time
 import os
+import pymssql
 from dotenv import load_dotenv
+from datetime import datetime
+
+
 load_dotenv()
 
 db_Password = os.getenv('PASSWORD')
@@ -21,17 +25,26 @@ def crawl_stock_info(url):
         response = json.loads(response)
         # print(response['msgArray'])
         date = response['msgArray'][0]['d']
-        t = response['msgArray'][0]['t']
-        o = response['msgArray'][0]['o']
-        h = response['msgArray'][0]['h']
-        l = response['msgArray'][0]['l']
+        timeToInsert = response['msgArray'][0]['t']
+        stock_code = response['msgArray'][0]['c']
+        o = float(response['msgArray'][0]['o'])
+        h = float(response['msgArray'][0]['h'])
+        l = float(response['msgArray'][0]['l'])
         tv = int(float(response['msgArray'][0]['v']) * 1000)
-        c = response['msgArray'][0]['z']
+        c = float(response['msgArray'][0]['z'])
         d = float(response['msgArray'][0]['z']) - float(response['msgArray'][0]['y'])
-        print(date, t, o, h, l, tv, c, d)
-        # response = json.dumps(response, indent=4)
+        print(date, timeToInsert, o, h, l, tv, c, d)
+        response = json.dumps(response, indent=4)
         # print(response)
 
+        try:
+            conn = pymssql.connect(**db_settings)
+            command = "INSERT INTO [dbo].[股價資訊] (stock_code, date, time, tv, t, o, h, l, c, d, v, MA5, MA10, MA20, MA60, MA120, MA240) VALUES (%s, %s, %s, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d, %d)"
+            with conn.cursor() as cursor:
+                cursor.execute(command, (stock_code, date, timeToInsert, tv,0, o, h, l, c, d, 0, 0, 0, 0, 0, 0, 0))
+                conn.commit()
+        except Exception as e:
+            print(e)    
         time.sleep(60)
 
 # Main Function
