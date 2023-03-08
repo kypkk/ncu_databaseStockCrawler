@@ -1,0 +1,22 @@
+import requests
+import json
+import time
+
+while True:
+    url = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2330.tw&json=1&delay=0'
+    response = requests.get(url).text
+    response = json.loads(response)
+    # print(response['msgArray'])
+    date = response['msgArray'][0]['d']
+    t = response['msgArray'][0]['t']
+    o = response['msgArray'][0]['o']
+    h = response['msgArray'][0]['h']
+    l = response['msgArray'][0]['l']
+    tv = int(float(response['msgArray'][0]['v']) * 1000)
+    c = response['msgArray'][0]['z']
+    d = float(response['msgArray'][0]['z']) - float(response['msgArray'][0]['y'])
+    print(date, t, o, h, l, tv, c, d)
+    # response = json.dumps(response, indent=4)
+    # print(response)
+
+    time.sleep(60)
