@@ -1,6 +1,18 @@
 import requests
 import json
 import time
+import os
+from dotenv import load_dotenv
+load_dotenv()
+
+db_Password = os.getenv('PASSWORD')
+db_settings = {
+    "host": "127.0.0.1",
+    "user": "SA",
+    "password": db_Password,
+    "database": "TutorialDB",
+    "charset": "utf8"
+}
 
 def crawl_stock_info(url):
 
