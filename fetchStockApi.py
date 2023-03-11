@@ -35,7 +35,7 @@ def crawl_stock_info(url):
         tv = int(float(response['msgArray'][0]['v']) * 1000)
         c = float(response['msgArray'][0]['z'])
         d = float(response['msgArray'][0]['z']) - float(response['msgArray'][0]['y'])
-        print(date, timeToInsert, o, h, l, tv, c, d)
+        print(f"stock_code: {stock_code}, date: {date}, timeToInsert: {timeToInsert}, o: {o}, h: {h}, l: {l}, tv: {tv}, c: {c}, d: {d}")
         response = json.dumps(response, indent=4)
         # print(response)
 
