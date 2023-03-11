@@ -45,6 +45,7 @@ def crawl_stock_info(url):
             with conn.cursor() as cursor:
                 cursor.execute(command, (stock_code, date, timeToInsert, tv,0, o, h, l, c, d, 0, 0, 0, 0, 0, 0, 0))
                 conn.commit()
+                print("----------Insertion Successfully----------")
         except Exception as e:
             print(e)    
         time.sleep(60)
