@@ -49,7 +49,9 @@ def crawl_stock_info(url):
                 
         except Exception as e:
             print(e)    
+        time.sleep(10)
     print(f"----------Insertion Successfully---------- date: {hint_date}")
+    time.sleep(60)
 
 
 # Main Function
@@ -63,3 +65,5 @@ if __name__ == "__main__":
                 date = str(year)+f"{month:02d}"+"01"
                 url = f'https://www.twse.com.tw/exchangeReport/STOCK_DAY?re%20sponse=json&date={date}&stockNo={code}'
                 urls.append(url)
+    with ThreadPoolExecutor(max_workers=5) as executor:  
+        executor.map(crawl_stock_info, urls) 
