@@ -3,6 +3,8 @@ import json
 import time
 import os
 import pymssql
+import concurrent.futures
+from concurrent.futures import ThreadPoolExecutor
 from dotenv import load_dotenv
 from datetime import datetime
 
@@ -51,5 +53,8 @@ def crawl_stock_info(url):
 if __name__ == "__main__":
     
     # Enter the url of website
-    url = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2330.tw&json=1&delay=0'
-    crawl_stock_info(url)
+    url_2330 = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_2330.tw&json=1&delay=0'
+    url_0050 = 'https://mis.twse.com.tw/stock/api/getStockInfo.jsp?ex_ch=tse_0050.tw&json=1&delay=0'
+
+    with ThreadPoolExecutor() as executor:  
+        executor.map(crawl_stock_info,[url_2330, url_0050]) 
