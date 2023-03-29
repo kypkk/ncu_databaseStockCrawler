@@ -25,4 +25,4 @@ jobs:
         DISCORD_USERNAME: 'github'
       uses: Ilshidur/action-discord@0.3.2
       with:
-        args: '{{ EVENT_PAYLOAD.repository.full_name }} {{github.event_name}}'
+        args: 'The project {{ EVENT_PAYLOAD.repository.full_name }} has been deployed.'
