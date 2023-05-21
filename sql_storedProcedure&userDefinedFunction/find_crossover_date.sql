@@ -1,4 +1,4 @@
-CREATE FUNCTION find_crossover_date(
+ALTER FUNCTION find_crossover_date(
     @stock_code VARCHAR(10),
     @change_interval INT
 )
@@ -8,13 +8,13 @@ RETURNS @trend_tmp TABLE
     stock_code VARCHAR(10) NOT NULL,
     MA_price real,
     close_price real NOT NULL,
-    /**/
+    /* MA, close price 比較 */
     point_region INT,
-    /**/
+    /*  臨界點*/
     crossover_point INT,
-    /**/
+    /* 目前趨勢*/
     cur_trend INT,
-    /**/
+    /* 未來日期中MA與close price的變化天數*/
     counter INT
 )
 AS
@@ -25,10 +25,12 @@ SELECT date, stock_code, MA5, c from dbo.股價資訊 where stock_code = @stock_
 order by date desc
 
 UPDATE @trend_tmp
-set point_region = 0 where MA_price > close_price
+set point_region = 0 
+where MA_price > close_price
 
 UPDATE @trend_tmp
-set point_region = 1 where MA_price <= close_price
+set point_region = 1 
+where MA_price <= close_price
 
 DECLARE cur CURSOR LOCAL FOR
     select date, stock_code, point_region from @trend_tmp
@@ -46,7 +48,7 @@ SET @DAY_change_count = 0
 WHILE @@FETCH_STATUS = 0 BEGIN
     SELECT @DAY_change_count = COUNT(*)
     from @trend_tmp
-    where point_region != @current_trend and date in (select date from find_date_2(@date_tmp, @change_interval, 1, 1))
+    where point_region != @current_trend and date in (select date from find_date_2(@date_tmp, @change_interval, 1, 0))
 
     IF(@DAY_change_count >= @change_interval)
         BEGIN
