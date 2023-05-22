@@ -1,4 +1,4 @@
-CREATE FUNCTION [dbo].[GB_rule4_8]
+ALTER FUNCTION [dbo].[GB_rule4_8]
 (
     @company varchar(10),
     @positive_bias_threshold float,
@@ -50,11 +50,11 @@ BEGIN
     BEGIN
         IF(@trend = 1 AND @today_bias > @positive_bias_threshold)
             BEGIN
-                INSERT INTO @result VALUES(@date,1)
+                INSERT INTO @result VALUES(@date,-1)
             END
         ELSE IF(@trend =-1 AND @today_bias < @negative_bias_threshold)
             BEGIN
-                INSERT INTO @result VALUES(@date,-1)
+                INSERT INTO @result VALUES(@date,1)
             END
         FETCH next from cur into @date,@today_c,@today_MA,@today_bias,@trend
     END
